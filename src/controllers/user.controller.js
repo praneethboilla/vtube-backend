@@ -99,10 +99,16 @@ const loginUser = asyncHandler(async (req, res) => {
     // send cookies 
     const { username, email, password } = req.body
 
-    if (!username || !email) {
+    if (!username && !email) {
         throw new ApiError(400, "username or email is required")
     }
-    // login using anyone of username, email using mongodb $or
+
+    // for any one check
+    // if (!(username && email)) {
+    //     throw new ApiError(400, "username or email is required")
+    // }
+    
+    // login using anyone of username, email using mongodb $or //and find the user from db using username or email
     const user = await User.findOne({
         $or: [{ username }, { email }]
     })
@@ -111,7 +117,7 @@ const loginUser = asyncHandler(async (req, res) => {
         throw new ApiError(404, "User does nor exist")
     }
     // check password from db using isPasswordCorrect method created in user.model
-    const isPasswordValid = await User.isPasswordCorrect(password)
+    const isPasswordValid = await user.isPasswordCorrect(password)
 
     if (!isPasswordValid) {
         throw new ApiError(401, "invalid user credentials")
