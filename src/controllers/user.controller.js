@@ -134,7 +134,8 @@ const loginUser = asyncHandler(async (req, res) => {
     // send tokens to frontend by using cookies
     const options = {
         httpOnly: true,
-        secure: true
+        secure: true,
+        sameSite: "None"
     }
 
     return res.status(200)
